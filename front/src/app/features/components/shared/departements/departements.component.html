@@ -1,0 +1,164 @@
+
+<div>
+  <div class="flex items-center justify-between mt-4 mb-6">
+    <h1 class="font-extrabold text-3xl text-[#1E293B] opacity-95">
+      Départements
+    </h1>
+    <button id="ajouter-departement" class="flex justify-around gap-2" (click)="ajouterdepartementDialog.open()" hlmBtn>
+      <i class="fa-solid fa-plus"></i>
+      <span class="sr-only sm:not-sr-only">Ajouter Département</span>
+    </button>
+  </div>
+
+  <!-- Add Department Dialog -->
+  <hlm-dialog #ajouterdepartementDialog>
+    <hlm-dialog-content class="sm:max-w-[425px]" *brnDialogContent="let ctx">
+      <hlm-dialog-header>
+        <h3 hlmDialogTitle>Ajouter un Département</h3>
+      </hlm-dialog-header>
+      <form [formGroup]="addForm">
+        <div class="py-4 grid gap-4">
+          <div class="items-center grid grid-cols-4 gap-4">
+            <label hlmLabel for="name" class="text-right">Nom</label>
+            <input hlmInput formControlName="name" id="name" placeholder="Nom du département" class="col-span-3" />
+          </div>
+          <div *ngIf="addForm.get('name').invalid && (addForm.get('name').dirty || addForm.get('name').touched)" class="text-red-500">
+            <small *ngIf="addForm.get('name').errors?.['required']">Le champ Nom est requis.</small>
+          </div>
+        </div>
+        <hlm-dialog-footer>
+          <button hlmBtn type="button" (click)="passDialog(ctx); addDepartment()">
+            Sauvegarder
+          </button>
+        </hlm-dialog-footer>
+      </form>
+    </hlm-dialog-content>
+  </hlm-dialog>
+
+  <!-- Update Department Dialog -->
+  <hlm-dialog #modifierdepartementDialog>
+    <hlm-dialog-content class="sm:max-w-[425px] min-w-[425px]" *brnDialogContent="let ctx">
+      <hlm-dialog-header>
+        <h3 hlmDialogTitle>Modifier Département</h3>
+      </hlm-dialog-header>
+      <form [formGroup]="updateForm"
+        class="flex flex-col gap-4 items-center w-full  max-h-96 px-5 pb-2">
+        <div class="py-4 flex flex-col justify-center items-center gap-4 w-full">
+          <div class="flex flex-col gap-4 w-full">
+            <label hlmLabel for="name" class="text-left">Nom de Département</label>
+            <input hlmInput id="name" name="name" formControlName="name" type="text" />
+            <div *ngIf="updateForm.get('name').invalid && (updateForm.get('name').dirty || updateForm.get('name').touched)" class="text-red-500">
+              <small  *ngIf="updateForm.get('name').errors?.['required']">Nom de Département est requis.</small>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-4 w-full">
+            <label hlmLabel for="chefId" class="text-left" >Chef de Département</label>
+            <brn-select class="inline-block" id="chefId" formControlName="chefId" placeholder="Sélectionner un Chef">
+              <hlm-select-trigger class="w-full">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content>
+                @for (user of selectedDept.users; track $index) {
+                <hlm-option value="{{ user.id }}">{{ user.nomComplet }}</hlm-option>
+                }
+              </hlm-select-content>
+            </brn-select>
+            <div *ngIf="updateForm.get('chefId').invalid && (updateForm.get('chefId').dirty || updateForm.get('chefId').touched)">
+              <small *ngIf="updateForm.get('chefId').errors['required']" class="text-red-700">Vous devez choisir un chef département.</small>
+            </div>
+          </div>
+        </div>
+      </form>
+      <hlm-dialog-footer>
+        <button hlmBtn type="button" (click)="passDialog(ctx); updateDepartment()">
+          Sauvegarder
+        </button>
+      </hlm-dialog-footer>
+    </hlm-dialog-content>
+  </hlm-dialog>
+
+  <!-- Deletion Confirmation Dialog -->
+  <hlm-alert-dialog #supprimerdepartementDialog>
+    <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+      <hlm-alert-dialog-header>
+        <h3 hlmAlertDialogTitle>Etes-vous absolument sûr ?</h3>
+        <p hlmAlertDialogDescription>Cette action ne peut pas être annulée.</p>
+      </hlm-alert-dialog-header>
+      <hlm-alert-dialog-footer>
+        <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
+        <button hlmAlertDialogAction (click)="passDialog(ctx); deleteDepartment()">
+          Delete Department
+        </button>
+      </hlm-alert-dialog-footer>
+    </hlm-alert-dialog-content>
+  </hlm-alert-dialog>
+
+  <!-- Department Table -->
+  <div class="relative overflow-x-auto shadow-none border">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" class="px-6 py-3">ID</th>
+          <th scope="col" class="px-6 py-3">NOM</th>
+          <th scope="col" class="px-6 py-3">Chef</th>
+          <th scope="col" class="px-6 py-3">
+            <span class="sr-only">Actions</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (department of departements; track $index) {
+        <tr class="bg-white border-t dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td class="px-6 py-4 text-gray-900 dark:text-white">
+            {{ $index + 1 }}
+          </td>
+          <td class="px-6 py-4">
+            {{ department.name }}
+          </td>
+          <td class="px-6 py-4">
+            @if (department.chef) {
+            <div class="w-full flex items-center justify-start gap-3">
+              <hlm-avatar class="w-8 h-8">
+                <img src="{{department.chef.imgPath ? 'http://localhost:8081/uploads/' + department.chef.imgPath : ''}}" alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+                <span class="text-sm font-thin" hlmAvatarFallback>{{
+                  department.chef.nomComplet.substring(0, 2)
+                  }}</span>
+              </hlm-avatar>
+              <span class="text-sm">{{ department.chef.nomComplet }}</span>
+            </div>
+            }@else {
+            <div class="w-full flex items-center justify-start gap-3">
+              <hlm-icon size="lg" name="lucideAlertCircle" />
+              <span class="text-sm">Aucun</span>
+            </div>
+            }
+          </td>
+
+          <td class="px-6 py-4 text-right">
+            <button hlmBtn variant="ghost" class="h-6 w-6 p-0.5" align="end" [brnMenuTriggerFor]="menu">
+              <hlm-icon class="w-4 h-4" name="lucideMoreHorizontal" />
+            </button>
+            <ng-template #menu>
+              <hlm-menu>
+                <hlm-menu-label>Actions</hlm-menu-label>
+                <hlm-menu-separator />
+                <hlm-menu-group>
+                  <button hlmMenuItem (click)="modifierdepartementDialog.open(); selectedDepartment(department.id)"
+                    hlmMenuItem>
+                    Modifier
+                  </button>
+                  <button hlmMenuItem (click)="supprimerdepartementDialog.open(); selectedDepartment(department.id)"
+                    hlmMenuItem>
+                    Supprimer
+                  </button>
+                </hlm-menu-group>
+              </hlm-menu>
+            </ng-template>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

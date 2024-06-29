@@ -1,0 +1,82 @@
+<section class="w-full h-full">
+  <div class="flex items-center justify-start mt-4 mb-6">
+    <h1 class="font-extrabold text-3xl text-[#1E293B] opacity-95">Paramètres</h1>
+  </div>
+  <section hlmCard class="pb-5">
+    <div hlmCardHeader class="w-full">
+      <div class="flex items-center justify-end">
+        <button hlmBtn (click)="updateConfig()">Sauvegarder</button>
+      </div>
+    </div>
+    <div hlmCardContent>
+      <form [formGroup]="configForm">
+        <div class="mx-4 flex flex-col md:flex-row gap-4 w-full">
+          <div class="flex flex-col gap-4 w-full">
+            <div class="flex items-center p-4 border border-border space-x-4 rounded-md">
+              @if(this.ai){
+              <hlm-icon size="lg" name="lucideCheckCheck" />
+              <div class="flex-1 space-y-1">
+                <p class="text-sm font-medium leading-none">IA Activée</p>
+                <p class="text-sm text-muted-foreground">
+                  Toutes les fonctionnalités associées à l'IA seront activées.
+                </p>
+              </div>
+              }@else {
+              <hlm-icon size="lg" name="lucideX" />
+              <div class="flex-1 space-y-1">
+                <p class="text-sm font-medium leading-none">IA Désactivée</p>
+                <p class="text-sm text-muted-foreground">
+                  Toutes les fonctionnalités associées à l'IA seront désactivées.
+                </p>
+              </div>
+              }
+              <hlm-switch class="ml-4" id="aiFeature" name="aiFeature"
+                (changed)="this.ai = !this.ai;" formControlName="aiFeature"
+                aria-label="aiFeature" />
+            </div>
+            <label hlmLabe>apiKey
+              <input formControlName="apiKey" class="w-full mt-2" hlmInput type="text" />
+            </label>
+            <label hlmLabe>model
+              <input formControlName="model" class="w-full mt-2" hlmInput type="text" />
+            </label>
+            <label hlmLabe>temperature
+              <input formControlName="temperature" class="w-full mt-2" hlmInput type="text" />
+            </label>
+          </div>
+          <div class="flex flex-col gap-4 w-full">
+            <div class="flex items-center p-4 border border-border space-x-4 rounded-md">
+              @if(this.sms){
+              <hlm-icon size="lg" name="lucideCheckCheck" />
+              <div class="flex-1 space-y-1">
+                <p class="text-sm font-medium leading-none">SMS Activée</p>
+                <p class="text-sm text-muted-foreground">
+                  Les notifications par SMS seront activées.
+                </p>
+              </div>
+              }@else {
+              <hlm-icon size="lg" name="lucideX" />
+              <div class="flex-1 space-y-1">
+                <p class="text-sm font-medium leading-none">SMS Désactivée</p>
+                <p class="text-sm text-muted-foreground">
+                  Les notifications par SMS seront désactivées.
+                </p>
+              </div>
+              }
+              <hlm-switch class="ml-4" id="smsFeature" name="smsFeature"
+                (changed)="this.sms = !this.sms" formControlName="smsFeature"
+                aria-label="smsFeature" />
+            </div>
+            <label hlmLabe>user
+              <input formControlName="smsUsername" class="w-full mt-2" hlmInput type="text" />
+            </label>
+            <label hlmLabe>psw
+              <input formControlName="smsPassword" class="w-full mt-2" hlmInput type="text" />
+            </label>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+</section>

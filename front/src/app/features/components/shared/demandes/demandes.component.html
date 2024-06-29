@@ -1,0 +1,339 @@
+
+<div>
+  <div class="flex items-center justify-start mt-4 mb-6">
+    <h1 class="font-extrabold text-3xl text-[#1E293B] opacity-95">Demandes</h1>
+  </div>
+
+  <hlm-alert-dialog #refuserdemandeDialog>
+    <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+      <hlm-alert-dialog-header>
+        <h3 hlmAlertDialogTitle>ٌRefuser Demande</h3>
+        <p hlmAlertDialogDescription>
+          Si Vous Avez Refusé La Demande Ecrire La Raison
+        </p>
+        <form [formGroup]="reponseForm">
+          <textarea formControlName="note" class="min-h-[80px] w-full" hlmInput placeholder="Tapez votre Raison ici."></textarea>
+        </form>
+      </hlm-alert-dialog-header>
+      <hlm-alert-dialog-footer>
+        <button hlmAlertDialogCancel (click)="ctx.close()">Annuler</button>
+        <button hlmAlertDialogAction (click)="this.refuserDemande(ctx)">Confirmer</button>
+      </hlm-alert-dialog-footer>
+    </hlm-alert-dialog-content>
+  </hlm-alert-dialog>
+
+  <hlm-dialog #opendemandeDialog>
+    <hlm-dialog-content class="w-[100vw] sm:max-w-[500px]" *brnDialogContent="let ctx">
+      <hlm-dialog-header>
+        <h3 hlmDialogTitle>Détails de la demande</h3>
+        <div class="w-full h-full flex items-center justify-around gap-3">
+          <button hlmBtn class="mt-4 bg-sky-600 hover:bg-sky-500 text-white w-full flex items-center justify-center" ><hlm-icon size="sm" class="mr-2" name="lucideBrainCircuit" />Recommandations</button>
+        </div>
+      </hlm-dialog-header>
+      <div class="flex flex-col gap-4 items-center w-full overflow-y-scroll max-h-96 px-5 pb-2">
+        <div class="w-full px-4">
+          <div class="bg-white max-w-2xl shadow overflow-hidden sm:rounded-lg">
+            <div class="border-t border-gray-200">
+              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <div class="flex items-center text-xs font-medium text-gray-500">
+                  <span>Employé :</span>
+                </div>
+                <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  <span class="whitespace-normal break-words">{{this.returnUserNom(this.selectedDemande.userId)}}</span>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                <div class="flex items-center text-xs font-medium text-gray-500">
+                  <span>Type :</span>
+                </div>
+                <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2 ">
+                    <span class="whitespace-normal break-words">{{ returnType(this.selectedDemande.type, this.selectedDemande.categorie) }}</span>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                <div class="flex items-center text-xs font-medium text-gray-500">
+                  <span>Date :</span>
+                </div>
+                <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  <span class="whitespace-normal break-words">{{ returnDate(this.selectedDemande.type, this.selectedDemande.debut, this.selectedDemande.fin) }}</span>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                <div class="flex items-center text-xs font-medium text-gray-500">
+                  <span>Durée :</span>
+                </div>
+                <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  <span class="whitespace-normal break-words">{{ returnDuree(this.selectedDemande.type, this.selectedDemande.debut, this.selectedDemande.fin) }}</span>
+                </div>
+              </div>
+
+              @if (this.selectedDemande.statusCd === 'ACCEPTED' && this.selectedDemande.statusRrh === 'ACCEPTED' && this.selectedDemande.statusDg === 'ACCEPTED') {
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>État :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">Acceptée</span>
+                  </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>Date Réponse :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">{{ this.selectedDemande.dateReponse }}</span>
+                  </div>
+                </div>
+              } @else if(this.selectedDemande.statusCd === 'REJECTED' || this.selectedDemande.statusRrh === 'REJECTED' || this.selectedDemande.statusDg === 'REJECTED') {
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>État :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">Refusée</span>
+                  </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>Date Réponse :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">{{ this.selectedDemande.dateReponse }}</span>
+                  </div>
+                </div>
+                @if (this.selectedDemande.noteResponse) {
+                  <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                    <div class="flex items-center text-xs font-medium text-gray-500">
+                      <span>Note :</span>
+                    </div>
+                    <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      <span class="whitespace-normal break-words">{{ this.selectedDemande.noteResponse }}</span>
+                    </div>
+                  </div>
+                }
+              }@else{
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>État :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">En Attente</span>
+                  </div>
+                </div>
+              }
+              @if (this.selectedDemande.motif) {
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>Motif :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">{{ this.selectedDemande.motif }}</span>
+                  </div>
+                </div>
+              }
+              @if (this.selectedDemande.attachments.length > 0) {
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 border-t">
+                  <div class="flex items-center text-xs font-medium text-gray-500">
+                    <span>Documents :</span>
+                  </div>
+                  <div class="text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span class="whitespace-normal break-words">
+                      <ul>
+                        @for (att of this.selectedDemande.attachments; track $index){
+                          <li><a hlmBtn target='_blank' variant="link" href="http://localhost:8081/uploads/{{att}}">● {{att}}</a></li>
+                        }
+                      </ul>
+                    </span>
+                  </div>
+                </div>
+              }
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <hlm-dialog-footer>
+        <div class="w-full h-full flex items-center justify-around gap-3">
+          <button hlmBtn class="bg-red-700 hover:bg-red-600 text-white w-full flex items-center justify-center" (click)="refuserdemandeDialog.open(); ctx.close();" ><hlm-icon size="sm" class="mr-2" name="lucideX" />Refuser</button>
+          <button hlmBtn class="bg-green-600 hover:bg-green-500 text-white w-full flex items-center justify-center" (click)="this.accepterDemande(ctx)"><hlm-icon size="sm" class="mr-2" name="lucideCheck" />Accepter</button>
+        </div>
+
+      </hlm-dialog-footer>
+    </hlm-dialog-content>
+  </hlm-dialog>
+
+
+  <ul class="mx-auto mt-2 divide-y shadow-none rounded-xl">
+    <li class="shadow-lg mb-5">
+      <details open class="group">
+        <summary
+          class="bg-[#1E293B] hover:bg-gray-700 text-white flex items-center justify-between px-4 py-3 font-medium marker:content-none hover:cursor-pointer">
+          <span class="pl-5">Demandes à traiter</span>
+          <svg class="w-5 h-5 text-gray-200 hover:text-white transition group-open:rotate-90"
+            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" VoirBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z">
+            </path>
+          </svg>
+        </summary>
+
+        <article class="p-4">
+          <!--Table ici-->
+          <div class="relative overflow-x-auto shadow-none border">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" class="px-6 py-3 uppercase">Employé</th>
+                  <th scope="col" class="px-6 py-3">TYPE DE DEMANDE</th>
+                  <th scope="col" class="px-6 py-3">DATE</th>
+                  <th scope="col" class="px-6 py-3 uppercase">Durée</th>
+                  <th scope="col" class="px-6 py-3 uppercase">État</th>
+                  <th scope="col" class="px-6 py-3"></th>
+                </tr>
+              </thead>
+              @if (this.demandesPending.length > 0) {
+              <tbody>
+                @for (demande of this.demandesPending; track $index) {
+                <tr
+                  class="bg-white border-t dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td class="px-6 py-4 text-gray-900 dark:text-white">
+                    <div class="w-full flex items-center justify-start gap-3">
+                      <hlm-avatar class="w-7 h-7">
+                        <img
+                          src="{{ returnUserImg(demande.userId) ? 'http://localhost:8081/uploads/' + returnUserImg(demande.userId) : ''}}"
+                          alt="spartan logo. Resembling a spartanic shield"
+                          hlmAvatarImage
+                        />
+                        <span class="text-sm font-thin" hlmAvatarFallback>{{ returnUserNom(demande.userId).substring(0, 2) }}</span>
+                      </hlm-avatar>
+                      <span class="text-sm">{{ returnUserNom(demande.userId) }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    {{ returnType(demande.type, demande.categorie) }}
+                  </td>
+                  <td class="px-6 py-4">
+                    {{ returnDate(demande.type, demande.debut, demande.fin) }}
+                  </td>
+                  <td class="px-6 py-4">
+                    {{ returnDuree(demande.type, demande.debut, demande.fin) }}
+                  </td>
+                  <td class="px-6 py-4">
+                    @if (demande.statusCd === 'ACCEPTED' && demande.statusRrh === 'ACCEPTED' && demande.statusDg === 'ACCEPTED') {
+                      <div hlmBadge class='uppercase bg-green-600 hover:bg-green-600' variant='destructive'>Acceptée</div>
+                    } @else if(demande.statusCd === 'REJECTED' || demande.statusRrh === 'REJECTED' || demande.statusDg === 'REJECTED') {
+                      <div hlmBadge class='uppercase' variant='destructive'>Refusée</div>
+                    }@else{
+                      <div hlmBadge class='uppercase' variant="secondary">en Attente</div>
+                    }
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <button (click)="this.selectDemande(demande); opendemandeDialog.open()" hlmBtn size="icon" variant="outline"><hlm-icon size='sm' name="lucideChevronRight"/>
+                    </button>
+                  </td>
+                </tr>
+                }
+              </tbody>
+              }@else{
+                <tbody>
+                  <tr class="bg-white border-t dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td colspan="6">
+                      <div class="w-full flex items-center justify-center h-10">
+                        Vide
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              }
+            </table>
+          </div>
+        </article>
+      </details>
+    </li>
+
+      <li class="shadow-lg mb-5">
+        <details open class="group">
+          <summary
+            class="bg-[#1E293B] hover:bg-gray-700 text-white flex items-center justify-between px-4 py-3 font-medium marker:content-none hover:cursor-pointer">
+            <span class="pl-5">Demandes décidées</span>
+            <svg class="w-5 h-5 text-gray-200 hover:text-white transition group-open:rotate-90"
+              xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" VoirBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z">
+              </path>
+            </svg>
+          </summary>
+
+          <article class="p-4">
+            <!--Table ici-->
+            <div class="relative overflow-x-auto shadow-none border">
+              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 uppercase">Employé</th>
+                    <th scope="col" class="px-6 py-3">TYPE DE DEMANDE</th>
+                    <th scope="col" class="px-6 py-3">DATE</th>
+                    <th scope="col" class="px-6 py-3 uppercase">Durée</th>
+                    <th scope="col" class="px-6 py-3 uppercase">État</th>
+                  </tr>
+                </thead>
+                @if (this.demandesDecided.length > 0) {
+                  <tbody>
+                    @for (demande of this.demandesDecided; track $index) {
+                    <tr
+                      class="bg-white border-t dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <td class="px-6 py-4 text-gray-900 dark:text-white">
+                        <div class="w-full flex items-center justify-start gap-3">
+                          <hlm-avatar class="w-7 h-7">
+                            <img
+                              src="{{ returnUserImg(demande.userId) ? 'http://localhost:8081/uploads/' + returnUserImg(demande.userId) : ''}}"
+                              alt="spartan logo. Resembling a spartanic shield"
+                              hlmAvatarImage
+                            />
+                            <span class="text-sm font-thin" hlmAvatarFallback>{{ returnUserNom(demande.userId).substring(0, 2) }}</span>
+                          </hlm-avatar>
+                          <span class="text-sm">{{ returnUserNom(demande.userId) }}</span>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ returnType(demande.type, demande.categorie) }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ returnDate(demande.type, demande.debut, demande.fin) }}
+                      </td>
+                      <td class="px-6 py-4">
+                        {{ returnDuree(demande.type, demande.debut, demande.fin) }}
+                      </td>
+                      <td class="px-6 py-4">
+                        @if (demande.statusCd === 'ACCEPTED' && demande.statusRrh === 'ACCEPTED' && demande.statusDg === 'ACCEPTED') {
+                          <div hlmBadge class='uppercase bg-green-600 hover:bg-green-600' variant='destructive'>Acceptée</div>
+                        } @else if(demande.statusCd === 'REJECTED' || demande.statusRrh === 'REJECTED' || demande.statusDg === 'REJECTED') {
+                          <div hlmBadge class='uppercase' variant='destructive'>Refusée</div>
+                        }@else{
+                          <div hlmBadge class='uppercase' variant="secondary">en Attente</div>
+                        }
+                      </td>
+                    </tr>
+                    }
+                  </tbody>
+                }@else{
+                  <tbody>
+                    <tr class="bg-white border-t dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <td colspan="6">
+                        <div class="w-full flex items-center justify-center h-10">
+                          Vide
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                }
+              </table>
+            </div>
+          </article>
+        </details>
+      </li>
+  </ul>
+</div>

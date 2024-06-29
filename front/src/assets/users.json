@@ -1,0 +1,8 @@
+[
+    { "id": 1, "username": "admin", "password": "12345678smart", "role": "DG", "name": "foulen admin" , "solde":"15 Jour" },
+    { "id": 2, "username": "hr", "password": "12345678smart", "role": "hr", "name": "foulen hr" , "solde":"3 Jour" },
+    { "id": 3, "username": "hod", "password": "12345678smart", "role": "hod", "name": "chef foulen" , "solde":"22 Jour" },
+    { "id": 4, "username": "employee", "password": "12345678smart", "role": "employee", "name": "foulen employe" , "solde":"34 Jour" }
+  ]
+  
+    

@@ -1,0 +1,153 @@
+<div class="content transform ease-in-out duration-500 pt-4 px-5 md:px-5 pb-4">
+  <div class="mt-4 mb-10">
+    <h1 class="font-extrabold text-3xl text-[#1E293B] opacity-95">
+      Tableau de bord
+    </h1>
+  </div>
+
+  <div
+    class="w-full flex gap-4 items-start justify-center md:flex-nowrap flex-wrap"
+  >
+    <div routerLink="../employes"
+      class="group w-full rounded-lg bg-[rgb(41,49,79)] p-5 transition relative duration-300 cursor-pointer hover:translate-y-[3px] hover:shadow-[0_-8px_0px_0px_#076BBC]"
+    >
+      <div class="flex flex-row flex-wrap-reverse h-full w-full justify-around">
+        <div class="flex flex-col items-center justify-center">
+          <p class="text-white text-md text-center">Employés</p>
+          <p class="text-white text-xl font-bold text-center">{{this.users.length}}</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <img
+            src="../../../../../assets/dashboard-img/employees.png"
+            alt="Image"
+            class="group-hover:opacity-100 rounded-full opacity-80 transition group-hover:scale-110 duration-300 h-12 w-12"
+          />
+        </div>
+      </div>
+    </div>
+    <div routerLink="../departements"
+      class="group w-full rounded-lg bg-[rgb(41,49,79)] p-5 transition relative duration-300 cursor-pointer hover:translate-y-[3px] hover:shadow-[0_-8px_0px_0px_#076BBC]"
+    >
+      <div class="flex flex-row flex-wrap-reverse h-full w-full justify-around">
+        <div class="flex flex-col items-center justify-center">
+          <p class="text-white text-md text-center">Départements</p>
+          <p class="text-white text-xl font-bold text-center">{{this.departments.length}}</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <img
+            src="../../../../../assets/dashboard-img/department.png"
+            alt="Image"
+            class="group-hover:opacity-100 opacity-80 transition group-hover:scale-110 duration-300 h-10 w-10"
+          />
+        </div>
+      </div>
+    </div>
+    <div routerLink="../Demandes"
+      class="group w-full rounded-lg bg-[rgb(41,49,79)] p-5 transition relative duration-300 cursor-pointer hover:translate-y-[3px] hover:shadow-[0_-8px_0px_0px_#076BBC]"
+    >
+      <div class="flex flex-row flex-wrap-reverse h-full w-full justify-around">
+        <div class="flex flex-col items-center justify-center">
+          <p class="text-white text-md text-center">Demandes</p>
+          <p class="text-white text-xl font-bold text-center">{{this.demandes.decided.all.length}}</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <img
+            src="../../../../../assets/dashboard-img/request.png"
+            alt="Image"
+            class="group-hover:opacity-100 opacity-80 transition group-hover:scale-110 duration-300 h-10 w-10"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <section hlmCard class="mt-4 shadow-none border w-fit">
+    <div hlmCardHeader>
+      <h2
+        hlmCardTitle
+        class="font-bold text-xl text-[#1E293B] opacity-95 text-center"
+      >
+        Statistiques des Demandes : Décisions et Types
+      </h2>
+      <!--  <p hlmCardDescription class="text-md text-center">
+        Visualisez le volume, la répartition et la typologie des demandes.
+      </p> -->
+    </div>
+    <div hlmCardContent class="flex flex-row items-start justify-center gap-5 md:flex-nowrap flex-wrap">
+      @if (this.departments) {
+        <section class="section2 border">
+          <div
+            class="max-w-sm w-full bg-white rounded-lg shadow-none dark:bg-gray-800 px-4 pt-4 md:px-6 md:pt-6 pb-0"
+          >
+
+
+            <div class="flex flex-row gap-3 items-center justify-around pb-3">
+              <dl>
+                <dt
+                  class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1 text-center"
+                >
+                  Total
+                </dt>
+                <dd
+                  class="leading-none text-xl font-bold text-black text-center"
+                >
+                  {{this.demandes.decided.all.length}}
+                </dd>
+              </dl>
+              <dl>
+                <dt
+                  class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1 text-center"
+                >
+                  Accéptés
+                </dt>
+                <dd
+                  class="leading-none text-xl font-bold text-[#004c95] text-center"
+                >
+                {{this.demandes.decided.accepted.length}}
+                </dd>
+              </dl>
+              <dl>
+                <dt
+                  class="text-base font-normal text-gray-500 dark:text-gray-400 pb-1 text-center"
+                >
+                  Refusés
+                </dt>
+                <dd
+                  class="leading-none text-xl font-bold text-[#a6b0bf] text-center"
+                >
+                {{this.demandes.decided.rejected.length}}
+                </dd>
+              </dl>
+            </div>
+
+            <div id="bar-chart" class="pb-0 mb-0"></div>
+          </div>
+        </section>
+      }
+      <section class="section1 border">
+        <div
+          class="max-w-sm w-full bg-white rounded-lg shadow-none dark:bg-gray-800 p-4 md:p-6"
+        >
+          <div class="flex justify-center items-center mb-3">
+            <div class="flex justify-center items-center">
+              <h5
+                class="text-base font-normal text-gray-500 dark:text-gray-400 leading-none text-center pe-1"
+              >
+                Les Demandes par Type
+              </h5>
+
+            </div>
+
+          </div>
+
+          <!-- Donut Chart -->
+          <div class="py-6" id="donut-chart"></div>
+
+        </div>
+      </section>
+
+    </div>
+  </section>
+
+</div>

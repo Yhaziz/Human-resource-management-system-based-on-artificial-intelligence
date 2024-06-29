@@ -1,0 +1,418 @@
+@if (currentUserData) {
+<section class="body bg-white dark:bg-[#0F172A]">
+  <div class="fixed w-full z-30 flex bg-white dark:bg-[#0F172A] p-2 items-center justify-center h-16 px-10 shadow-md">
+    <div
+      class="logo ml-12 dark:text-white absolute top-2 left-7 transform ease-in-out duration-500 flex-none h-full flex items-center justify-center">
+      <img src="../../../../assets/logo/text-logo-nobg.png" class="h-8" alt="" />
+    </div>
+    <!-- SPACER -->
+    <div class="grow h-full flex items-center justify-center absolute top-2 right-2"></div>
+    <div class="flex-none h-full text-center flex items-center justify-center absolute right-2">
+      <button hlmBtn variant="ghost" [brnMenuTriggerFor]="profil"
+        class="pl-2 pr-3 flex w-full border border-[#1E293B] hover:border-gray-100 rounded-full py-2.5 items-center justify-around mr-5">
+        <div class="flex justify-around">
+          <div class="flex items-center gap-2">
+            <div class="flex-none flex justify-center">
+              <div class="w-8 h-6 flex items-center">
+                <hlm-avatar class="w-8 h-8">
+                  <img
+                    src="{{ this.currentUserData.user.imgPath ? 'http://localhost:8081/uploads/' + this.currentUserData.user.imgPath : ''}}"
+                    alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+                  <span class="text-sm font-thin"
+                    hlmAvatarFallback>{{ this.currentUserData.user.nomComplet.substring(0, 2) }}</span>
+                </hlm-avatar>
+              </div>
+            </div>
+
+            <div class="hidden md:block text-sm md:text-md text-black dark:text-white font-semibold">
+              {{ this.currentUserData.user.nomComplet }}
+            </div>
+          </div>
+        </div>
+      </button>
+      <ng-template #profil>
+        <hlm-menu class="w-56">
+          <hlm-menu-label>Mon Compte</hlm-menu-label>
+          <hlm-menu-separator />
+          <hlm-menu-group>
+            <button (click)="parametresDialog.open()" hlmMenuItem>
+              <hlm-icon name="lucideCog" hlmMenuIcon />
+              <span>Paramètres</span>
+            </button>
+
+            <button (click)="logOut()" hlmMenuItem>
+              <hlm-icon name="lucideLogOut" hlmMenuIcon />
+              <span>Déconnexion</span>
+            </button>
+          </hlm-menu-group>
+        </hlm-menu>
+      </ng-template>
+    </div>
+    <hlm-sheet #parametresDialog side="right">
+      <hlm-sheet-content *brnSheetContent="let ctx">
+        <hlm-sheet-header>
+          <h3 hlmSheetTitle>Paramétres</h3>
+        </hlm-sheet-header>
+        <div class="py-4 grid gap-4">
+          <hlm-tabs tab="account" class="w-full">
+            <hlm-tabs-list class="w-full grid grid-cols-2" aria-label="tabs example">
+              <button hlmTabsTrigger="account">Profil</button>
+              <button hlmTabsTrigger="password">Mot de passe</button>
+            </hlm-tabs-list>
+            <div hlmTabsContent="account">
+              <section hlmCard>
+                <div hlmCardHeader>
+                  <h3 hlmCardTitle>Account</h3>
+                  <p hlmCardDescription>Make changes to your account here. Click save when you're done.</p>
+                </div>
+
+                <div hlmCardContent>
+                  <form [formGroup]="profileForm"
+                    class="flex flex-col gap-4 items-center w-full overflow-y-auto max-h-80 px-2 pb-2">
+                    <hlm-avatar variant="large">
+                      <img
+                        src="{{ this.currentUserData.user.imgPath ? 'http://localhost:8081/uploads/' + this.currentUserData.user.imgPath : ''}}"
+                        alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+                      <span class="text-sm font-thin"
+                        hlmAvatarFallback>{{ this.currentUserData.user.nomComplet.substring(0, 2) }}</span>
+                    </hlm-avatar>
+                    <button (click)="fileInput.click()" hlmBtn variant="secondary">Changer la Photo</button>
+                    <input #fileInput type="file" accept="image/*" (change)="onFileChange($event)"
+                      style="display: none;">
+                    <div class="flex flex-col gap-4 w-full justify-center items-center">
+                      <div class="flex flex-row mx-2 max-w-[250px] overflow-x-scroll gap-2 px-4">
+                        @if (this.img) {
+                        <div class="p-3 border rounded-md flex items-center gap-3 w-auto">
+                          <div class="flex flex-col gap-1">
+                            <p class="text-sm font-semibold truncate overflow-hidden">{{ this.img.name }}</p>
+                            <div class="text-xs font-thin">{{ humanFileSize(this.img.size) }}</div>
+                          </div>
+                          <button (click)="deleteImg()" hlmBtn size="icon" variant="outline">
+                            <hlm-icon size='sm' name="lucideTrash2" /></button>
+                        </div>
+                        }
+                      </div>
+                    </div>
+
+
+
+
+                    <label class="block my-2 w-full" hlmLabel> Nom Complet
+                      <input id="nomComplet" name="nomComplet" formControlName="nomComplet" class="mt-1.5 w-full" hlmInput minlength="4" />
+                      <div *ngIf="profileForm.get('nomComplet')?.invalid && (profileForm.get('nomComplet')?.dirty || profileForm.get('nomComplet')?.touched)">
+                        <small *ngIf="profileForm.get('nomComplet')?.errors['required'] " class="text-red-700">Nom d'utilisateur est requis</small>
+                      </div>
+                    </label>
+
+
+                    <label class="block my-2 w-full" hlmLabel>
+                      Numéro de téléphone
+                      <input id="telephone" name="telephone" formControlName="telephone" class="mt-1.5 w-full" hlmInput />
+                      <div *ngIf="profileForm.get('telephone')?.invalid && (profileForm.get('telephone')?.dirty || profileForm.get('telephone')?.touched)">
+                        <small *ngIf="profileForm.get('telephone')?.errors['required'] " class="text-red-700">telephone est requis</small>
+                      </div>
+                    </label>
+
+
+                  </form>
+                </div>
+
+                <div hlmCardFooter>
+                  <button hlmBtn (click)="this.updateProfile(ctx)"  class="mx-4 w-full">Save Changes</button>
+                </div>
+              </section>
+            </div>
+            <div hlmTabsContent="password">
+              <section hlmCard>
+                <div hlmCardHeader>
+                  <h3 hlmCardTitle>Password</h3>
+                  <p hlmCardDescription>Changez votre mot de passe ici. Après avoir enregistré, vous serez déconnecté.
+                  </p>
+                </div>
+                <form [formGroup]="passChangeForm" hlmCardContent>
+                  <label class="block my-4" hlmLabel>
+                    Ancien mot de passe
+                    <input formControlName="oldPass" id="oldPass" name="oldPass" class="mt-1.5 w-full" type="oldPass" hlmInput />
+                    <div   *ngIf="passChangeForm.get('oldPass')?.invalid && (passChangeForm.get('oldPass')?.dirty || passChangeForm.get('oldPass')?.touched)">
+                      <small *ngIf="passChangeForm.get('oldPass')?.errors['oldPass']" class="text-red-700">Mot de passe requis</small>
+                     
+                    </div>
+                  </label>
+                  <label class="block my-4" hlmLabel>
+                    Nouveau mot de passe
+                    <input formControlName="newPass" id="newPass" name="newPass" class="mt-1.5 w-full" type="password" hlmInput />
+                    <div   *ngIf="passChangeForm.get('newPass')?.invalid && (passChangeForm.get('newPass')?.dirty || passChangeForm.get('newPass')?.touched)">
+                      <small *ngIf="passChangeForm.get('newPass')?.errors['required']" class="text-red-700">Mot de passe requis</small>
+                     
+                    </div>
+                  </label>
+                  <label class="block my-4" hlmLabel>
+                    Repeter nouveau mot de passe
+                    <input formControlName="newPassConfirmation" id="newPassConfirmation" name="newPassConfirmation" class="mt-1.5 w-full" type="password" hlmInput />
+                    <div   *ngIf="passChangeForm.get('newPassConfirmation')?.invalid && (passChangeForm.get('newPassConfirmation')?.dirty || passChangeForm.get('newPassConfirmation')?.touched)">
+                      <small *ngIf="passChangeForm.get('newPassConfirmation')?.errors['required']" class="text-red-700">Mot de passe requis</small>
+                      
+                    </div>
+                  </label>
+                </form>
+                <div hlmCardFooter>
+                  <button (click)="this.changePassword(ctx)" hlmBtn class="mx-4 w-full">Enregistrer le mot de
+                    passe</button>
+                </div>
+              </section>
+            </div>
+          </hlm-tabs>
+        </div>
+      </hlm-sheet-content>
+    </hlm-sheet>
+  </div>
+
+  <aside
+    class="w-60 -translate-x-48 fixed transition transform ease-in-out duration-1000 z-50 flex h-screen bg-[#1E293B]">
+    <!-- open sidebar button -->
+    <div
+      class="max-toolbar translate-x-24 scale-x-0 w-full rounded-r-full -right-5 transition transform ease-in duration-300 flex items-center justify-between border-0 border-white dark:border-[#0F172A] bg-[#1E293B] absolute top-2.5 rounded-full h-12">
+      <div
+        class="w-full flex items-center absolute top-1.5 -right-1 border-2 border-white group bg-white pl-10 pr-2 py-1 rounded-full text-white">
+        <div class="transform ease-in-out duration-300 mr-12 text-gray-700">
+          <img class="h-8" src="../../../../assets/logo/text-logo-nobg.png" alt="" />
+        </div>
+      </div>
+    </div>
+    <div (click)="openNav()"
+      class="hover:bg-gray-700 -right-6 transition transform ease-in-out duration-500 flex border-4 border-white dark:border-[#0F172A] bg-[#1E293B] dark:hover:bg-blue-500 cursor-pointer absolute top-2.5 p-3 rounded-full text-white hover:rotate-45">
+      <img class="h-6" src="../../../../assets/logo/img-logo-nobg.png" alt="" />
+    </div>
+    <!-- MAX SIDEBAR-->
+    <div class="max hidden text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)]">
+      <div routerLink="./dashboard"
+        class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path d="M15.0001 17C14.2006 17.6224 13.1504 18 12.0001 18C10.8499 18 9.79965 17.6224 9.00012 17"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M2.35151 13.2135C1.99849 10.9162 1.82198 9.76763 2.25629 8.74938C2.69059 7.73112 3.65415 7.03443 5.58126 5.64106L7.02111 4.6C9.41841 2.86667 10.6171 2 12.0001 2C13.3832 2 14.5818 2.86667 16.9791 4.6L18.419 5.64106C20.3461 7.03443 21.3097 7.73112 21.744 8.74938C22.1783 9.76763 22.0018 10.9162 21.6487 13.2135L21.3477 15.1724C20.8473 18.4289 20.597 20.0572 19.4291 21.0286C18.2612 22 16.5538 22 13.1389 22H10.8613C7.44646 22 5.73903 22 4.57112 21.0286C3.40321 20.0572 3.15299 18.4289 2.65255 15.1724L2.35151 13.2135Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+        </svg>
+        <div>Tableau de bord</div>
+        <br />
+      </div>
+      <div routerLink="./notifications"
+        class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M2.52992 14.394C2.31727 15.7471 3.268 16.6862 4.43205 17.1542C8.89481 18.9486 15.1052 18.9486 19.5679 17.1542C20.732 16.6862 21.6827 15.7471 21.4701 14.394C21.3394 13.5625 20.6932 12.8701 20.2144 12.194C19.5873 11.2975 19.525 10.3197 19.5249 9.27941C19.5249 5.2591 16.1559 2 12 2C7.84413 2 4.47513 5.2591 4.47513 9.27941C4.47503 10.3197 4.41272 11.2975 3.78561 12.194C3.30684 12.8701 2.66061 13.5625 2.52992 14.394Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M9 21C9.79613 21.6219 10.8475 22 12 22C13.1525 22 14.2039 21.6219 15 21" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        @if (this.dgService.currentUserData().notifications.notSeen.length > 0) {
+        <span
+          class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[30%] right-[95%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[20px] min-h-[20px]">
+          {{ this.dgService.currentUserData().notifications.notSeen.length }}
+        </span>
+        }
+
+        <div>Notifications</div>
+      </div>
+      @if (!this.currentUserData.user.independant) {
+        <div routerLink="mes-demandes"
+          class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path
+              d="M6.18007 15.2964C4.92249 16.0335 1.62521 17.5386 3.63348 19.422C4.6145 20.342 5.7071 21 7.08077 21H14.9192C16.2929 21 17.3855 20.342 18.3665 19.422C20.3748 17.5386 17.0775 16.0335 15.8199 15.2964C12.8709 13.5679 9.12906 13.5679 6.18007 15.2964Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z"
+              stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M18 5.53846C18 4.68879 18.6716 4 19.5 4C20.3284 4 21 4.68879 21 5.53846C21 5.84473 20.9127 6.1301 20.7623 6.36984C20.3141 7.08436 19.5 7.76572 19.5 8.61538V9"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19.4998 11H19.5088" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <div>Mes Demandes</div>
+        </div>
+      }
+      <brn-separator hlmSeparator class="my-5 bg-gray-700" />
+      <div routerLink="./departements"
+        class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M16 10L18.1494 10.6448C19.5226 11.0568 20.2092 11.2628 20.6046 11.7942C21 12.3256 21 13.0425 21 14.4761V22"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M8 9L11 9M8 13L11 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path
+            d="M12 22V19C12 18.0572 12 17.5858 11.7071 17.2929C11.4142 17 10.9428 17 10 17H9C8.05719 17 7.58579 17 7.29289 17.2929C7 17.5858 7 18.0572 7 19V22"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M2 22L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M3 22V6.71724C3 4.20649 3 2.95111 3.79118 2.32824C4.58237 1.70537 5.74742 2.04355 8.07752 2.7199L13.0775 4.17122C14.4836 4.57937 15.1867 4.78344 15.5933 5.33965C16 5.89587 16 6.65344 16 8.16857V22"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <div>Departements</div>
+      </div>
+      <div routerLink="./employes"
+        class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M18.6161 20H19.1063C20.2561 20 21.1707 19.4761 21.9919 18.7436C24.078 16.8826 19.1741 15 17.5 15M15.5 5.06877C15.7271 5.02373 15.9629 5 16.2048 5C18.0247 5 19.5 6.34315 19.5 8C19.5 9.65685 18.0247 11 16.2048 11C15.9629 11 15.7271 10.9763 15.5 10.9312"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M4.48131 16.1112C3.30234 16.743 0.211137 18.0331 2.09388 19.6474C3.01359 20.436 4.03791 21 5.32572 21H12.6743C13.9621 21 14.9864 20.436 15.9061 19.6474C17.7889 18.0331 14.6977 16.743 13.5187 16.1112C10.754 14.6296 7.24599 14.6296 4.48131 16.1112Z"
+            stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M13 7.5C13 9.70914 11.2091 11.5 9 11.5C6.79086 11.5 5 9.70914 5 7.5C5 5.29086 6.79086 3.5 9 3.5C11.2091 3.5 13 5.29086 13 7.5Z"
+            stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        <div>Employés</div>
+      </div>
+      <div routerLink="./demandes"
+        class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M21 11V10C21 6.22876 21 4.34315 19.7595 3.17157C18.519 2 16.5225 2 12.5294 2L11.4706 2C7.47752 2 5.48098 2 4.24049 3.17157C3 4.34315 3 6.22876 3 10L3 14C3 17.7712 3 19.6569 4.24049 20.8284C5.48098 22 7.47751 22 11.4706 22H12"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M8 7H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M8 12H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M21 20.6471L21 17C21 15.5706 19.6569 14 18 14C16.3431 14 15 15.5706 15 17L15 20.5C15 21.2797 15.7326 22 16.6364 22C17.5401 22 18.2727 21.2797 18.2727 20.5L18.2727 17.7647"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <div>Demandes</div>
+      </div>
+      <brn-separator hlmSeparator class="my-5 bg-gray-700" />
+
+
+
+      <div routerLink="./paramètres"
+        class="cursor-pointer mx-auto w-[80%] text-white hover:bg-gray-700 bg-[#1E293B] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z"
+            stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <div>Paramètres</div>
+      </div>
+    </div>
+    <!-- MINI SIDEBAR-->
+    <div class="mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)]">
+      <div routerLink="./dashboard"
+        class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path d="M15.0001 17C14.2006 17.6224 13.1504 18 12.0001 18C10.8499 18 9.79965 17.6224 9.00012 17"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M2.35151 13.2135C1.99849 10.9162 1.82198 9.76763 2.25629 8.74938C2.69059 7.73112 3.65415 7.03443 5.58126 5.64106L7.02111 4.6C9.41841 2.86667 10.6171 2 12.0001 2C13.3832 2 14.5818 2.86667 16.9791 4.6L18.419 5.64106C20.3461 7.03443 21.3097 7.73112 21.744 8.74938C22.1783 9.76763 22.0018 10.9162 21.6487 13.2135L21.3477 15.1724C20.8473 18.4289 20.597 20.0572 19.4291 21.0286C18.2612 22 16.5538 22 13.1389 22H10.8613C7.44646 22 5.73903 22 4.57112 21.0286C3.40321 20.0572 3.15299 18.4289 2.65255 15.1724L2.35151 13.2135Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div routerLink="./notifications"
+        class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M2.52992 14.394C2.31727 15.7471 3.268 16.6862 4.43205 17.1542C8.89481 18.9486 15.1052 18.9486 19.5679 17.1542C20.732 16.6862 21.6827 15.7471 21.4701 14.394C21.3394 13.5625 20.6932 12.8701 20.2144 12.194C19.5873 11.2975 19.525 10.3197 19.5249 9.27941C19.5249 5.2591 16.1559 2 12 2C7.84413 2 4.47513 5.2591 4.47513 9.27941C4.47503 10.3197 4.41272 11.2975 3.78561 12.194C3.30684 12.8701 2.66061 13.5625 2.52992 14.394Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M9 21C9.79613 21.6219 10.8475 22 12 22C13.1525 22 14.2039 21.6219 15 21" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        @if (this.dgService.currentUserData().notifications.notSeen.length > 0) {
+        <span
+          class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[30%] right-[8%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[20px] min-h-[20px]">
+          {{ this.dgService.currentUserData().notifications.notSeen.length }}
+        </span>
+        }
+
+      </div>
+      @if (!this.currentUserData.user.independant) {
+        <div routerLink="./mes-demandes"
+          class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path
+              d="M6.18007 15.2964C4.92249 16.0335 1.62521 17.5386 3.63348 19.422C4.6145 20.342 5.7071 21 7.08077 21H14.9192C16.2929 21 17.3855 20.342 18.3665 19.422C20.3748 17.5386 17.0775 16.0335 15.8199 15.2964C12.8709 13.5679 9.12906 13.5679 6.18007 15.2964Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="M15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z"
+              stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M18 5.53846C18 4.68879 18.6716 4 19.5 4C20.3284 4 21 4.68879 21 5.53846C21 5.84473 20.9127 6.1301 20.7623 6.36984C20.3141 7.08436 19.5 7.76572 19.5 8.61538V9"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19.4998 11H19.5088" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </div>
+      }
+      <brn-separator hlmSeparator class="my-5 bg-gray-700" />
+      <div routerLink="./departements"
+        class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M16 10L18.1494 10.6448C19.5226 11.0568 20.2092 11.2628 20.6046 11.7942C21 12.3256 21 13.0425 21 14.4761V22"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M8 9L11 9M8 13L11 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path
+            d="M12 22V19C12 18.0572 12 17.5858 11.7071 17.2929C11.4142 17 10.9428 17 10 17H9C8.05719 17 7.58579 17 7.29289 17.2929C7 17.5858 7 18.0572 7 19V22"
+            stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          <path d="M2 22L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M3 22V6.71724C3 4.20649 3 2.95111 3.79118 2.32824C4.58237 1.70537 5.74742 2.04355 8.07752 2.7199L13.0775 4.17122C14.4836 4.57937 15.1867 4.78344 15.5933 5.33965C16 5.89587 16 6.65344 16 8.16857V22"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div routerLink="./employes"
+        class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M18.6161 20H19.1063C20.2561 20 21.1707 19.4761 21.9919 18.7436C24.078 16.8826 19.1741 15 17.5 15M15.5 5.06877C15.7271 5.02373 15.9629 5 16.2048 5C18.0247 5 19.5 6.34315 19.5 8C19.5 9.65685 18.0247 11 16.2048 11C15.9629 11 15.7271 10.9763 15.5 10.9312"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M4.48131 16.1112C3.30234 16.743 0.211137 18.0331 2.09388 19.6474C3.01359 20.436 4.03791 21 5.32572 21H12.6743C13.9621 21 14.9864 20.436 15.9061 19.6474C17.7889 18.0331 14.6977 16.743 13.5187 16.1112C10.754 14.6296 7.24599 14.6296 4.48131 16.1112Z"
+            stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M13 7.5C13 9.70914 11.2091 11.5 9 11.5C6.79086 11.5 5 9.70914 5 7.5C5 5.29086 6.79086 3.5 9 3.5C11.2091 3.5 13 5.29086 13 7.5Z"
+            stroke="currentColor" stroke-width="1.5" />
+        </svg>
+      </div>
+      <div routerLink="./demandes"
+        class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M21 11V10C21 6.22876 21 4.34315 19.7595 3.17157C18.519 2 16.5225 2 12.5294 2L11.4706 2C7.47752 2 5.48098 2 4.24049 3.17157C3 4.34315 3 6.22876 3 10L3 14C3 17.7712 3 19.6569 4.24049 20.8284C5.48098 22 7.47751 22 11.4706 22H12"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M8 7H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M8 12H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M21 20.6471L21 17C21 15.5706 19.6569 14 18 14C16.3431 14 15 15.5706 15 17L15 20.5C15 21.2797 15.7326 22 16.6364 22C17.5401 22 18.2727 21.2797 18.2727 20.5L18.2727 17.7647"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </div>
+      <brn-separator hlmSeparator class="my-5 bg-gray-700" />
+
+
+
+      <div routerLink="./paramètres"
+        class="cursor-pointer hover:bg-gray-700 justify-end pr-4 text-white w-full bg-[#1E293B] p-3 transform ease-in-out duration-300 flex">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+          <path
+            d="M15.5 12C15.5 13.933 13.933 15.5 12 15.5C10.067 15.5 8.5 13.933 8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12Z"
+            stroke="currentColor" stroke-width="1.5" />
+          <path
+            d="M21.011 14.0965C21.5329 13.9558 21.7939 13.8854 21.8969 13.7508C22 13.6163 22 13.3998 22 12.9669V11.0332C22 10.6003 22 10.3838 21.8969 10.2493C21.7938 10.1147 21.5329 10.0443 21.011 9.90358C19.0606 9.37759 17.8399 7.33851 18.3433 5.40087C18.4817 4.86799 18.5509 4.60156 18.4848 4.44529C18.4187 4.28902 18.2291 4.18134 17.8497 3.96596L16.125 2.98673C15.7528 2.77539 15.5667 2.66972 15.3997 2.69222C15.2326 2.71472 15.0442 2.90273 14.6672 3.27873C13.208 4.73448 10.7936 4.73442 9.33434 3.27864C8.95743 2.90263 8.76898 2.71463 8.60193 2.69212C8.43489 2.66962 8.24877 2.77529 7.87653 2.98663L6.15184 3.96587C5.77253 4.18123 5.58287 4.28891 5.51678 4.44515C5.45068 4.6014 5.51987 4.86787 5.65825 5.4008C6.16137 7.3385 4.93972 9.37763 2.98902 9.9036C2.46712 10.0443 2.20617 10.1147 2.10308 10.2492C2 10.3838 2 10.6003 2 11.0332V12.9669C2 13.3998 2 13.6163 2.10308 13.7508C2.20615 13.8854 2.46711 13.9558 2.98902 14.0965C4.9394 14.6225 6.16008 16.6616 5.65672 18.5992C5.51829 19.1321 5.44907 19.3985 5.51516 19.5548C5.58126 19.7111 5.77092 19.8188 6.15025 20.0341L7.87495 21.0134C8.24721 21.2247 8.43334 21.3304 8.6004 21.3079C8.76746 21.2854 8.95588 21.0973 9.33271 20.7213C10.7927 19.2644 13.2088 19.2643 14.6689 20.7212C15.0457 21.0973 15.2341 21.2853 15.4012 21.3078C15.5682 21.3303 15.7544 21.2246 16.1266 21.0133L17.8513 20.034C18.2307 19.8187 18.4204 19.711 18.4864 19.5547C18.5525 19.3984 18.4833 19.132 18.3448 18.5991C17.8412 16.6616 19.0609 14.6226 21.011 14.0965Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+      </div>
+    </div>
+  </aside>
+  <!-- CONTENT -->
+
+  <div class="content ml-12 transform ease-in-out duration-500 pt-20 px-2 md:px-5 pb-4">
+    <router-outlet></router-outlet>
+  </div>
+</section>
+}

@@ -1,0 +1,78 @@
+
+<div class="2xl:container h-screen m-auto">
+    <div hidden class="fixed inset-0 w-7/12 lg:block">
+        <img class="w-full h-full object-cover"  src="assets/image/1.jpg" >
+    </div>
+    <div hidden role="hidden" class="fixed inset-0 w-6/12 ml-auto bg-white bg-opacity-70 backdrop-blur-xl lg:block"></div>
+    <div class="relative h-full ml-auto lg:w-6/12">
+        <div class="m-auto py-12 px-6 sm:p-20 xl:w-10/12">
+            <div class="flex flex-col items-center space-y-4">
+                <a href="">
+                    <img src="assets/image/logo-navbar.png" class="w-40" alt="smartech">
+                </a>
+                <p class="font-medium text-lg text-gray-600">Bienvenue Dans Smart Technology</p>
+            </div>
+
+
+
+            <div role="hidden" class="mt-12 border-t">
+                <span class="block w-max mx-auto -mt-3 px-4 text-center text-gray-500 bg-white">Connectez-vous à votre compte</span>
+            </div>
+
+            <form [formGroup]="loginForm" class="space-y-6 py-6">
+                <div>
+                    <input type="text" name="username" placeholder="Entrez votre nom d'utilisateur" formControlName="username" class="w-full py-3 px-6 ring-1 ring-gray-300 rounded-xl placeholder-gray-600 bg-transparent transition disabled:ring-gray-200 disabled:bg-gray-100 disabled:placeholder-gray-400 invalid:ring-red-400 focus:invalid:outline-none" maxlength="8">
+                    <div *ngIf="loginForm.get('username')?.invalid && (loginForm.get('username')?.dirty || loginForm.get('username')?.touched)">
+                      <div *ngIf="loginForm.get('username')?.errors['required'] " class="text-red-700">Nom d'utilisateur est requis</div>
+                      <small *ngIf="loginForm.get('username')?.errors['invalidLength']" class="text-red-700">Le nom d'utilisateur doit comporter 8 caractères</small>
+                      <small *ngIf="loginForm.get('username')?.errors['invalidPrefix']" class="text-red-700">Le nom d'utilisateur doit commencer par 0 ou 1</small>
+                    </div>
+                  </div>
+
+                  <div class=" items-start">
+                    <div class="relative">
+                    <button type="button" class="absolute inset-y-0 right-0 px-4 flex items-center text-gray-700" (click)="togglePasswordVisibility()">
+                      <span *ngIf="showPassword; else hidePasswordIcon">
+                        <!-- Show Password Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                          <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                        </svg>
+                      </span>
+                      <ng-template #hidePasswordIcon>
+                        <!-- Hide Password Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd" />
+                          <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                        </svg>
+                      </ng-template>
+                    </button>
+                    <input type="password" name="password" placeholder="*******" formControlName="password" class="w-full py-3 px-6 ring-1 ring-gray-300 rounded-xl placeholder-gray-600 bg-transparent transition disabled:ring-gray-200 disabled:bg-gray-100 disabled:placeholder-gray-400 invalid:ring-red-400 focus:invalid:outline-none" maxlength="13">
+                    <div   *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)">
+                      <small *ngIf="loginForm.get('password')?.errors['required']" class="text-red-700">Mot de passe requis</small>
+                      <small *ngIf="loginForm.get('password')?.errors['invalidPassword']" class="text-red-700">Le mot de passe doit comporter 8 caractères</small>
+                    </div>
+                  </div>
+                  </div>
+
+                <div>
+                  <button
+                    type="button"
+                    (click)="login() "
+                    [disabled]="loginForm.invalid"
+                    class="w-full px-6 py-3 rounded-xl bg-sky-500 transition hover:bg-sky-600 focus:bg-sky-600 active:bg-sky-800"
+                  >
+                    <span class="font-semibold text-white text-lg">Se connecter</span>
+                  </button>
+
+                </div>
+              </form>
+
+            <div class="border-t pt-12">
+                <div class="space-y-2 text-center">
+                    <span class="block text-sm tracking-wide text-gray-500">&copy; Smart Technology 2024</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

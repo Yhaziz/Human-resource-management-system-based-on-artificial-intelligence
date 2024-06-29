@@ -1,0 +1,307 @@
+@if (currentUserData) {
+  <section class="body bg-white dark:bg-[#0F172A]">
+    <div class="fixed w-full z-30 flex bg-white dark:bg-[#0F172A] p-2 items-center justify-center h-16 px-10 shadow-md">
+      <div
+        class="logo ml-12 dark:text-white absolute top-2 left-7 transform ease-in-out duration-500 flex-none h-full flex items-center justify-center">
+        <img src="../../../../assets/logo/text-logo-nobg.png" class="h-8" alt="" />
+      </div>
+      <!-- SPACER -->
+      <div class="grow h-full flex items-center justify-center absolute top-2 right-2"></div>
+      <div class="flex-none h-full text-center flex items-center justify-center absolute right-2">
+        <button hlmBtn variant="ghost" [brnMenuTriggerFor]="profil"
+          class="flex w-full border-2 border-gray-100 hover:bg-gray-100 rounded-full py-2.5 items-center justify-around mr-5">
+          <div class="flex justify-around">
+            <div class="flex items-center gap-2">
+              <div class="flex-none flex justify-center">
+                <div class="w-8 h-6 flex items-center">
+                  <hlm-avatar class="w-8 h-8">
+                    <img
+                      src="{{ this.currentUserData.user.imgPath ? 'http://localhost:8081/uploads/' + this.currentUserData.user.imgPath : ''}}"
+                      alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+                    <span class="text-sm font-thin"
+                      hlmAvatarFallback>{{ this.currentUserData.user.nomComplet.substring(0, 2) }}</span>
+                  </hlm-avatar>
+                </div>
+              </div>
+
+              <div class="hidden md:block text-sm md:text-md text-black dark:text-white font-semibold">
+                {{ this.currentUserData.user.nomComplet }}
+              </div>
+            </div>
+          </div>
+        </button>
+        <ng-template #profil>
+          <hlm-menu class="w-56">
+            <hlm-menu-label>Mon Compte</hlm-menu-label>
+            <hlm-menu-separator />
+            <hlm-menu-group>
+              <button (click)="parametresDialog.open()" hlmMenuItem>
+                <hlm-icon name="lucideCog" hlmMenuIcon />
+                <span>Paramètres</span>
+              </button>
+
+              <button (click)="logOut()" hlmMenuItem>
+                <hlm-icon name="lucideLogOut" hlmMenuIcon />
+                <span>Déconnexion</span>
+              </button>
+            </hlm-menu-group>
+          </hlm-menu>
+        </ng-template>
+      </div>
+      <hlm-sheet #parametresDialog side="right">
+        <hlm-sheet-content *brnSheetContent="let ctx">
+          <hlm-sheet-header>
+            <h3 hlmSheetTitle>Paramétres</h3>
+          </hlm-sheet-header>
+          <div class="py-4 grid gap-4">
+            <hlm-tabs tab="account" class="w-full">
+              <hlm-tabs-list class="w-full grid grid-cols-2" aria-label="tabs example">
+                <button hlmTabsTrigger="account">Profil</button>
+                <button hlmTabsTrigger="password">Mot de passe</button>
+              </hlm-tabs-list>
+              <div hlmTabsContent="account">
+                <section hlmCard>
+                  <div hlmCardHeader>
+                    <h3 hlmCardTitle>Account</h3>
+                    <p hlmCardDescription>Make changes to your account here. Click save when you're done.</p>
+                  </div>
+
+                  <div hlmCardContent>
+                    <form [formGroup]="profileForm"
+                      class="flex flex-col gap-4 items-center w-full overflow-y-auto max-h-80 px-2 pb-2">
+                      <hlm-avatar variant="large">
+                        <img
+                          src="{{ this.currentUserData.user.imgPath ? 'http://localhost:8081/uploads/' + this.currentUserData.user.imgPath : ''}}"
+                          alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+                        <span class="text-sm font-thin"
+                          hlmAvatarFallback>{{ this.currentUserData.user.nomComplet.substring(0, 2) }}</span>
+                      </hlm-avatar>
+                      <button (click)="fileInput.click()" hlmBtn variant="secondary">Changer la Photo</button>
+                      <input #fileInput type="file" accept="image/*" (change)="onFileChange($event)"
+                        style="display: none;">
+                      <div class="flex flex-col gap-4 w-full justify-center items-center">
+                        <div class="flex flex-row mx-2 max-w-[250px] overflow-x-scroll gap-2 px-4">
+                          @if (this.img) {
+                          <div class="p-3 border rounded-md flex items-center gap-3 w-auto">
+                            <div class="flex flex-col gap-1">
+                              <p class="text-sm font-semibold truncate overflow-hidden">{{ this.img.name }}</p>
+                              <div class="text-xs font-thin">{{ humanFileSize(this.img.size) }}</div>
+                            </div>
+                            <button (click)="deleteImg()" hlmBtn size="icon" variant="outline">
+                              <hlm-icon size='sm' name="lucideTrash2" /></button>
+                          </div>
+                          }
+                        </div>
+                      </div>
+
+
+
+
+                      <label class="block my-2 w-full" hlmLabel>
+                        Nom Complet
+                        <input formControlName="nomComplet" class="mt-1.5 w-full" hlmInput />
+                      </label>
+
+                      <label class="block my-2 w-full" hlmLabel>
+                        Numéro de téléphone
+                        <input formControlName="telephone" class="mt-1.5 w-full" hlmInput />
+                      </label>
+
+
+                    </form>
+                  </div>
+
+                  <div hlmCardFooter>
+                    <button hlmBtn (click)="this.updateProfile(ctx)" class="mx-4 w-full">Save Changes</button>
+                  </div>
+                </section>
+              </div>
+              <div hlmTabsContent="password">
+                <section hlmCard>
+                  <div hlmCardHeader>
+                    <h3 hlmCardTitle>Password</h3>
+                    <p hlmCardDescription>Changez votre mot de passe ici. Après avoir enregistré, vous serez déconnecté.
+                    </p>
+                  </div>
+                  <form [formGroup]="passChangeForm" hlmCardContent>
+                    <label class="block my-4" hlmLabel>
+                      Ancien mot de passe
+                      <input formControlName="oldPass" class="mt-1.5 w-full" type="password" hlmInput />
+                    </label>
+                    <label class="block my-4" hlmLabel>
+                      Nouveau mot de passe
+                      <input formControlName="newPass" class="mt-1.5 w-full" type="password" hlmInput />
+                    </label>
+                    <label class="block my-4" hlmLabel>
+                      Repeter nouveau mot de passe
+                      <input formControlName="newPassConfirmation" class="mt-1.5 w-full" type="password" hlmInput />
+                    </label>
+                  </form>
+                  <div hlmCardFooter>
+                    <button (click)="this.changePassword(ctx)" hlmBtn class="mx-4 w-full">Enregistrer le mot de
+                      passe</button>
+                  </div>
+                </section>
+              </div>
+            </hlm-tabs>
+          </div>
+        </hlm-sheet-content>
+      </hlm-sheet>
+    </div>
+
+    <aside
+      class="w-60 -translate-x-48 fixed transition transform ease-in-out duration-1000 z-50 flex h-screen bg-[#4e668e]">
+      <!-- open sidebar button -->
+      <div
+        class="max-toolbar translate-x-24 scale-x-0 w-full rounded-r-full -right-5 transition transform ease-in duration-300 flex items-center justify-between border-0 border-white dark:border-[#0F172A] bg-[#4e668e] absolute top-2.5 rounded-full h-12">
+        <div
+          class="w-full flex items-center absolute top-1.5 -right-1 border-2 border-white group bg-white pl-10 pr-2 py-1 rounded-full text-white">
+          <div class="transform ease-in-out duration-300 mr-12 text-gray-700">
+            <img class="h-8" src="../../../../assets/logo/text-logo-nobg.png" alt="" />
+          </div>
+        </div>
+      </div>
+      <div (click)="openNav()"
+        class="hover:bg-[#1E293B] -right-6 transition transform ease-in-out duration-500 flex border-4 border-white dark:border-[#0F172A] bg-[#4e668e] dark:hover:bg-blue-500 cursor-pointer absolute top-2.5 p-3 rounded-full text-white hover:rotate-45">
+        <img class="h-6" src="../../../../assets/logo/img-logo-nobg.png" alt="" />
+      </div>
+      <!-- MAX SIDEBAR-->
+      <div class="max hidden text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)]">
+        <div routerLink="./dashboard"
+          class="cursor-pointer mx-auto w-[80%] text-white hover:bg-[#1E293B] bg-[#4e668e] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path d="M15.0001 17C14.2006 17.6224 13.1504 18 12.0001 18C10.8499 18 9.79965 17.6224 9.00012 17"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M2.35151 13.2135C1.99849 10.9162 1.82198 9.76763 2.25629 8.74938C2.69059 7.73112 3.65415 7.03443 5.58126 5.64106L7.02111 4.6C9.41841 2.86667 10.6171 2 12.0001 2C13.3832 2 14.5818 2.86667 16.9791 4.6L18.419 5.64106C20.3461 7.03443 21.3097 7.73112 21.744 8.74938C22.1783 9.76763 22.0018 10.9162 21.6487 13.2135L21.3477 15.1724C20.8473 18.4289 20.597 20.0572 19.4291 21.0286C18.2612 22 16.5538 22 13.1389 22H10.8613C7.44646 22 5.73903 22 4.57112 21.0286C3.40321 20.0572 3.15299 18.4289 2.65255 15.1724L2.35151 13.2135Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          </svg>
+          <div>Tableau de bord</div>
+          <br />
+        </div>
+        <div routerLink="./notifications"
+          class="cursor-pointer mx-auto w-[80%] text-white hover:bg-[#1E293B] bg-[#4e668e] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path
+              d="M2.52992 14.394C2.31727 15.7471 3.268 16.6862 4.43205 17.1542C8.89481 18.9486 15.1052 18.9486 19.5679 17.1542C20.732 16.6862 21.6827 15.7471 21.4701 14.394C21.3394 13.5625 20.6932 12.8701 20.2144 12.194C19.5873 11.2975 19.525 10.3197 19.5249 9.27941C19.5249 5.2591 16.1559 2 12 2C7.84413 2 4.47513 5.2591 4.47513 9.27941C4.47503 10.3197 4.41272 11.2975 3.78561 12.194C3.30684 12.8701 2.66061 13.5625 2.52992 14.394Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9 21C9.79613 21.6219 10.8475 22 12 22C13.1525 22 14.2039 21.6219 15 21" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          @if (this.dgService.currentUserData().notifications.notSeen.length > 0) {
+          <span
+            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[30%] right-[95%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[20px] min-h-[20px]">
+            {{ this.dgService.currentUserData().notifications.notSeen.length }}
+          </span>
+          }
+
+          <div>Notifications</div>
+        </div>
+        @if (!this.currentUserData.user.independant) {
+          <div routerLink="mes-demandes"
+            class="cursor-pointer mx-auto w-[80%] text-white hover:bg-[#1E293B] bg-[#4e668e] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+              <path
+                d="M6.18007 15.2964C4.92249 16.0335 1.62521 17.5386 3.63348 19.422C4.6145 20.342 5.7071 21 7.08077 21H14.9192C16.2929 21 17.3855 20.342 18.3665 19.422C20.3748 17.5386 17.0775 16.0335 15.8199 15.2964C12.8709 13.5679 9.12906 13.5679 6.18007 15.2964Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z"
+                stroke="currentColor" stroke-width="1.5" />
+              <path
+                d="M18 5.53846C18 4.68879 18.6716 4 19.5 4C20.3284 4 21 4.68879 21 5.53846C21 5.84473 20.9127 6.1301 20.7623 6.36984C20.3141 7.08436 19.5 7.76572 19.5 8.61538V9"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M19.4998 11H19.5088" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <div>Mes Demandes</div>
+          </div>
+        }
+        <brn-separator hlmSeparator class="my-5 bg-[#1E293B]" />
+        <div routerLink="./demandes"
+          class="cursor-pointer mx-auto w-[80%] text-white hover:bg-[#1E293B] bg-[#4e668e] p-2 rounded-md transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path
+              d="M21 11V10C21 6.22876 21 4.34315 19.7595 3.17157C18.519 2 16.5225 2 12.5294 2L11.4706 2C7.47752 2 5.48098 2 4.24049 3.17157C3 4.34315 3 6.22876 3 10L3 14C3 17.7712 3 19.6569 4.24049 20.8284C5.48098 22 7.47751 22 11.4706 22H12"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M8 7H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M8 12H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M21 20.6471L21 17C21 15.5706 19.6569 14 18 14C16.3431 14 15 15.5706 15 17L15 20.5C15 21.2797 15.7326 22 16.6364 22C17.5401 22 18.2727 21.2797 18.2727 20.5L18.2727 17.7647"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+          <div>Demandes</div>
+        </div>
+
+      </div>
+      <!-- MINI SIDEBAR-->
+      <div class="mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)]">
+        <div routerLink="./dashboard"
+          class="cursor-pointer hover:bg-[#1E293B] justify-end pr-4 text-white w-full bg-[#4e668e] p-3 transform ease-in-out duration-300 flex">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path d="M15.0001 17C14.2006 17.6224 13.1504 18 12.0001 18C10.8499 18 9.79965 17.6224 9.00012 17"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M2.35151 13.2135C1.99849 10.9162 1.82198 9.76763 2.25629 8.74938C2.69059 7.73112 3.65415 7.03443 5.58126 5.64106L7.02111 4.6C9.41841 2.86667 10.6171 2 12.0001 2C13.3832 2 14.5818 2.86667 16.9791 4.6L18.419 5.64106C20.3461 7.03443 21.3097 7.73112 21.744 8.74938C22.1783 9.76763 22.0018 10.9162 21.6487 13.2135L21.3477 15.1724C20.8473 18.4289 20.597 20.0572 19.4291 21.0286C18.2612 22 16.5538 22 13.1389 22H10.8613C7.44646 22 5.73903 22 4.57112 21.0286C3.40321 20.0572 3.15299 18.4289 2.65255 15.1724L2.35151 13.2135Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div routerLink="./notifications"
+          class="cursor-pointer hover:bg-[#1E293B] justify-end pr-4 text-white w-full bg-[#4e668e] p-3 transform ease-in-out duration-300 flex">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path
+              d="M2.52992 14.394C2.31727 15.7471 3.268 16.6862 4.43205 17.1542C8.89481 18.9486 15.1052 18.9486 19.5679 17.1542C20.732 16.6862 21.6827 15.7471 21.4701 14.394C21.3394 13.5625 20.6932 12.8701 20.2144 12.194C19.5873 11.2975 19.525 10.3197 19.5249 9.27941C19.5249 5.2591 16.1559 2 12 2C7.84413 2 4.47513 5.2591 4.47513 9.27941C4.47503 10.3197 4.41272 11.2975 3.78561 12.194C3.30684 12.8701 2.66061 13.5625 2.52992 14.394Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9 21C9.79613 21.6219 10.8475 22 12 22C13.1525 22 14.2039 21.6219 15 21" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          @if (this.dgService.currentUserData().notifications.notSeen.length > 0) {
+          <span
+            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[30%] right-[8%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[20px] min-h-[20px]">
+            {{ this.dgService.currentUserData().notifications.notSeen.length }}
+          </span>
+          }
+
+        </div>
+        @if (!this.currentUserData.user.independant) {
+          <div routerLink="./mes-demandes"
+            class="cursor-pointer hover:bg-[#1E293B] justify-end pr-4 text-white w-full bg-[#4e668e] p-3 transform ease-in-out duration-300 flex">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+              <path
+                d="M6.18007 15.2964C4.92249 16.0335 1.62521 17.5386 3.63348 19.422C4.6145 20.342 5.7071 21 7.08077 21H14.9192C16.2929 21 17.3855 20.342 18.3665 19.422C20.3748 17.5386 17.0775 16.0335 15.8199 15.2964C12.8709 13.5679 9.12906 13.5679 6.18007 15.2964Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z"
+                stroke="currentColor" stroke-width="1.5" />
+              <path
+                d="M18 5.53846C18 4.68879 18.6716 4 19.5 4C20.3284 4 21 4.68879 21 5.53846C21 5.84473 20.9127 6.1301 20.7623 6.36984C20.3141 7.08436 19.5 7.76572 19.5 8.61538V9"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M19.4998 11H19.5088" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+        }
+        <brn-separator hlmSeparator class="my-5 bg-[#1E293B]" />
+        <div routerLink="./demandes"
+          class="cursor-pointer hover:bg-[#1E293B] justify-end pr-4 text-white w-full bg-[#4e668e] p-3 transform ease-in-out duration-300 flex">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#ffffff" fill="none">
+            <path
+              d="M21 11V10C21 6.22876 21 4.34315 19.7595 3.17157C18.519 2 16.5225 2 12.5294 2L11.4706 2C7.47752 2 5.48098 2 4.24049 3.17157C3 4.34315 3 6.22876 3 10L3 14C3 17.7712 3 19.6569 4.24049 20.8284C5.48098 22 7.47751 22 11.4706 22H12"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M8 7H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M8 12H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M21 20.6471L21 17C21 15.5706 19.6569 14 18 14C16.3431 14 15 15.5706 15 17L15 20.5C15 21.2797 15.7326 22 16.6364 22C17.5401 22 18.2727 21.2797 18.2727 20.5L18.2727 17.7647"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </div>
+
+      </div>
+    </aside>
+    <!-- CONTENT -->
+
+    <div class="content ml-12 transform ease-in-out duration-500 pt-20 px-2 md:px-5 pb-4">
+      <router-outlet></router-outlet>
+    </div>
+  </section>
+  }

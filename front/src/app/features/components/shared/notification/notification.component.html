@@ -1,0 +1,50 @@
+<h1 class="font-extrabold text-3xl text-[#1E293B] opacity-95">Notification</h1>
+<div class="h-screen flex flex-col items-center justify-start gap-2 mt-6">
+  @if (this.notSeenNotifs.length > 0) {
+  @for (notif of this.notSeenNotifs; track $index) {
+  <div class="flex justify-between py-6 px-4 bg-gray-100 border-2 border-[#1E293B] rounded-lg w-full ">
+    <div  class="flex items-center space-x-4 ">
+      <hlm-avatar variant="large" class="h-14 w-14 rounded-full">
+        <img src="{{ notif.origineImgPath ? 'http://localhost:8081/uploads/' + notif.origineImgPath : ''}}"
+          alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+        <span class="text-sm font-thin" hlmAvatarFallback>{{ notif.origineNom.substring(0, 2) }}</span>
+      </hlm-avatar>
+      <div class="flex flex-col space-y-1">
+        <span class="font-bold">{{ notif.origineNom }}</span>
+        <span class="text-sm">{{ notif.text }}</span>
+      </div>
+    </div>
+    <div class="flex-none px-4 py-2 text-stone-600 text-xs md:text-sm">
+      {{ notif.dateCreation }}
+    </div>
+  </div>
+  }
+  }
+  @if (this.seenNotifs.length > 0) {
+  @for (notif of this.seenNotifs; track $index) {
+  <div class="flex justify-between py-6 px-4 bg-gray-100 border-[#1E293B] rounded-lg w-full">
+    <div class="flex items-center space-x-4">
+      <hlm-avatar variant="large" class="h-14 w-14 rounded-full">
+        <img src="{{ notif.origineImgPath ? 'http://localhost:8081/uploads/' + notif.origineImgPath : ''}}"
+          alt="spartan logo. Resembling a spartanic shield" hlmAvatarImage />
+        <span class="text-sm font-thin" hlmAvatarFallback>{{ notif.origineNom.substring(0, 2) }}</span>
+      </hlm-avatar>
+      <div class="flex flex-col space-y-1">
+        <span class="font-bold">{{ notif.origineNom }}</span>
+        <span class="text-sm">{{ notif.text }}</span>
+      </div>
+    </div>
+    <div class="flex-none px-4 py-2 text-stone-600 text-xs md:text-sm">
+      {{ notif.dateCreation }}
+    </div>
+  </div>
+  }
+  }
+
+  @if ((this.seenNotifs.length === 0 && this.notSeenNotifs.length === 0)) {
+  <div class="flex justify-between py-6 px-4 bg-gray-100 rounded-lg w-full">
+    <div class="flex items-center justify-center w-full py-16">0 Notifications</div>
+  </div>
+  }
+
+</div>

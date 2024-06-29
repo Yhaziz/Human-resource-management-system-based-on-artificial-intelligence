@@ -1,6 +1,6 @@
 # SmartRH
 
-Ce projet vise à développer un système de gestion des ressources humaines (HR) avancé, utilisant l'intelligence artificielle (IA), pour optimiser la gestion des demandes de congés au sein de l'entreprise Smartechnology.
+This project aims to develop an advanced human resources (HR) management system, using artificial intelligence (AI), to optimize the management of leave requests within the company.
 
 ![website](https://github.com/Yhaziz/Human-resource-management-system-based-on-artificial-intelligence/blob/929908bd93b945d6b5477b880273f1d4151de48b/smartrh.png)
 
@@ -32,4 +32,4 @@ Ce projet vise à développer un système de gestion des ressources humaines (HR
 
 This project is licensed under the MIT License .
 
-© 2024 [smartechnology]
+© 2024 [smartechnology](https://www.smartechnology.com.tn/)
